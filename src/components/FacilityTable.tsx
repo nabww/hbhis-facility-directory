@@ -34,11 +34,13 @@ export function FacilityTable({ data }: FacilityTableProps) {
         accessorKey: "facility_name",
         header: "Facility Name",
         cell: (info: any) => (
-          <Link
-            to={`/facility/${info.row.original.id}`}
-            className="font-medium text-gray-900 hover:text-brand-600 transition-colors">
-            {info.getValue()}
-          </Link>
+          <div className="max-w-[250px]">
+            <Link
+              to={`/facility/${info.row.original.id}`}
+              className="font-medium text-gray-900 hover:text-brand-600 transition-colors whitespace-normal break-words">
+              {info.getValue()}
+            </Link>
+          </div>
         ),
       },
       { accessorKey: "county", header: "County" },
@@ -46,49 +48,49 @@ export function FacilityTable({ data }: FacilityTableProps) {
       // { accessorKey: "facility_type", header: "Type" },
       {
         id: "sophos_ip",
-        header: "Sophos IP",
+        header: () => <div className="text-center w-full">Sophos IP</div>,
         cell: ({ row }: any) => (
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-sm">
-              {row.original.sophos_ip || "—"}
-            </span>
-            {row.original.sophos_ip && (
-              <CopyButton text={row.original.sophos_ip} />
-            )}
-            {row.original.sophos_url && (
-              <a
-                href={row.original.sophos_url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-gray-400 hover:text-brand-600 transition-colors"
-                title="Open Sophos URL">
-                <Monitor className="h-5 w-5" />
-              </a>
-            )}
+          <div className="flex justify-center">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-sm">
+                {row.original.sophos_ip || "—"}
+              </span>
+              {/* {row.original.sophos_ip && <CopyButton text={row.original.sophos_ip} />} */}
+              {row.original.sophos_url && (
+                <a
+                  href={row.original.sophos_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-400 hover:text-brand-600 transition-colors"
+                  title="Open Sophos URL">
+                  <Monitor className="h-5 w-5" />
+                </a>
+              )}
+            </div>
           </div>
         ),
       },
       {
         id: "elastic_ip",
-        header: "Elastic IP",
+        header: () => <div className="text-center w-full">Elastic IP</div>,
         cell: ({ row }: any) => (
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-sm">
-              {row.original.elastic_ip || "—"}
-            </span>
-            {row.original.elastic_ip && (
-              <CopyButton text={row.original.elastic_ip} />
-            )}
-            {row.original.elastic_url && (
-              <a
-                href={row.original.elastic_url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-gray-400 hover:text-brand-600 transition-colors"
-                title="Open Elastic URL">
-                <Tablet className="h-5 w-5" />
-              </a>
-            )}
+          <div className="flex justify-center">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-sm">
+                {row.original.elastic_ip || "—"}
+              </span>
+              {/* {row.original.elastic_ip && <CopyButton text={row.original.elastic_ip} />} */}
+              {row.original.elastic_url && (
+                <a
+                  href={row.original.elastic_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-400 hover:text-brand-600 transition-colors"
+                  title="Open Elastic URL">
+                  <Tablet className="h-5 w-5" />
+                </a>
+              )}
+            </div>
           </div>
         ),
       },

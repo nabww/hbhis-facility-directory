@@ -95,10 +95,10 @@ export function FacilityDirectory() {
       <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
         <div className="bg-gradient-to-r from-brand-600 to-brand-800 px-6 py-8 sm:px-8">
           <h1 className="text-3xl font-bold tracking-tight text-white">
-            HBHIS Facility Directory
+            HIS Facility Directory
           </h1>
           <p className="mt-2 text-brand-100">
-            Explore healthcare facility endpoints across Kenya
+            Healthcare facility endpoints list
           </p>
         </div>
 
