@@ -43,7 +43,7 @@ export function FacilityTable({ data }: FacilityTableProps) {
       },
       { accessorKey: "county", header: "County" },
       { accessorKey: "subcounty", header: "Subcounty" },
-      { accessorKey: "facility_type", header: "Type" },
+      // { accessorKey: "facility_type", header: "Type" },
       {
         id: "sophos_ip",
         header: "Sophos IP",

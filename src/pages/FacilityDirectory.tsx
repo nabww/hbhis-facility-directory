@@ -57,7 +57,9 @@ export function FacilityDirectory() {
         !debouncedSearch ||
         f.facility_name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
         f.mfl_code?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-        f.county.toLowerCase().includes(debouncedSearch.toLowerCase());
+        f.county.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        f.sophos_ip?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        f.elastic_ip?.toLowerCase().includes(debouncedSearch.toLowerCase());
       const matchesCounty =
         filters.county === "all" || f.county === filters.county;
       const matchesSubcounty =
