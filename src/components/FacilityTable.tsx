@@ -63,7 +63,12 @@ export function FacilityTable({ data }: FacilityTableProps) {
                   rel="noreferrer"
                   className="text-gray-400 hover:text-brand-600 transition-colors"
                   title="Open Sophos URL">
-                  <Monitor className="h-5 w-5" />
+                  <img
+                    src="/resources/pc.png"
+                    alt="Open Sophos"
+                    className="h-10 w-14"
+                    // className="h-15 w-20"
+                  />
                 </a>
               )}
             </div>
@@ -87,7 +92,11 @@ export function FacilityTable({ data }: FacilityTableProps) {
                   rel="noreferrer"
                   className="text-gray-400 hover:text-brand-600 transition-colors"
                   title="Open Elastic URL">
-                  <Tablet className="h-5 w-5" />
+                  <img
+                    src="/resources/tab.png"
+                    alt="Open Tablet"
+                    className="h-10 w-14"
+                  />
                 </a>
               )}
             </div>
