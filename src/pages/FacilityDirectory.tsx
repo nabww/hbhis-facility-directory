@@ -90,16 +90,23 @@ export function FacilityDirectory() {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       {/* Header + Stats */}
       <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
-        <div className="bg-gradient-to-r from-brand-600 to-brand-800 px-6 py-8 sm:px-8">
+        <div className="bg-gradient-to-r from-brand-600 to-brand-800 px-4 py-4 sm:px-8">
           <h1 className="text-3xl font-bold tracking-tight text-white">
             HIS Facility Directory
           </h1>
-          <p className="mt-2 text-brand-100">
-            Healthcare facility endpoints list
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-2">
+            <p className="text-brand-100">Healthcare facility endpoint list</p>
+            <a
+              href="http://192.168.1.200:3000"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-white/30 text-white hover:bg-white/10 transition-colors self-start sm:self-auto ml-auto">
+              Explore facility inventory...
+            </a>
+          </div>
         </div>
 
         {/* Quick stats */}
