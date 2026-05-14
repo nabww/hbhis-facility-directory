@@ -48,13 +48,13 @@ export function FacilityTable({ data }: FacilityTableProps) {
       // { accessorKey: "facility_type", header: "Type" },
       {
         id: "sophos_ip",
-        header: () => <div className="text-center w-full">Sophos IP</div>,
+        header: () => <div className="text-center w-full">Sophos Address</div>,
         cell: ({ row }: any) => (
           <div className="flex justify-center">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-sm">
+              {/* <span className="font-mono text-sm">
                 {row.original.sophos_ip || "—"}
-              </span>
+              </span> */}
               {/* {row.original.sophos_ip && <CopyButton text={row.original.sophos_ip} />} */}
               {row.original.sophos_url && (
                 <a
@@ -72,13 +72,13 @@ export function FacilityTable({ data }: FacilityTableProps) {
       },
       {
         id: "elastic_ip",
-        header: () => <div className="text-center w-full">Elastic IP</div>,
+        header: () => <div className="text-center w-full">Tablet Address</div>,
         cell: ({ row }: any) => (
           <div className="flex justify-center">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-sm">
+              {/* <span className="font-mono text-sm">
                 {row.original.elastic_ip || "—"}
-              </span>
+              </span> */}
               {/* {row.original.elastic_ip && <CopyButton text={row.original.elastic_ip} />} */}
               {row.original.elastic_url && (
                 <a
@@ -94,11 +94,11 @@ export function FacilityTable({ data }: FacilityTableProps) {
           </div>
         ),
       },
-      {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }: any) => <StatusBadge status={row.original.status} />,
-      },
+      // {
+      //   accessorKey: "status",
+      //   header: "Status",
+      //   cell: ({ row }: any) => <StatusBadge status={row.original.status} />,
+      // },
     ],
     [],
   );
