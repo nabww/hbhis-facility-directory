@@ -13,19 +13,35 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { toast } from "sonner";
+import type { FacilityFormValues } from "@/types";
+
+// Helper to convert Zod's optional (string | undefined) to null
+function preparePayload(data: FacilityFormData): FacilityFormValues {
+  return {
+    facility_name: data.facility_name,
+    county: data.county,
+    mfl_code: data.mfl_code ?? null,
+    subcounty: data.subcounty ?? null,
+    facility_type: data.facility_type ?? null,
+    sophos_ip: data.sophos_ip || null,
+    elastic_ip: data.elastic_ip || null,
+    sophos_url: data.sophos_url || null,
+    elastic_url: data.elastic_url || null,
+    status: data.status || "active",
+    notes: data.notes ?? null,
+  };
+}
 
 export function FacilityForm() {
   const { id } = useParams<{ id: string }>();
   const isEdit = Boolean(id);
   const navigate = useNavigate();
 
-  // Query facility only when editing
   const { data: facility, isLoading: isFacilityLoading } = useFacility(id!);
 
   const createMutation = useCreateFacility();
   const updateMutation = useUpdateFacility();
 
-  // Build default values directly from fetched data (or empty for new)
   const defaultValues: FacilityFormData =
     isEdit && facility
       ? {
@@ -62,25 +78,26 @@ export function FacilityForm() {
   } = useForm<FacilityFormData>({
     resolver: zodResolver(facilitySchema),
     defaultValues,
-    // important: don't reset form after submit, we'll navigate away
   });
-
   const onSubmit = async (data: FacilityFormData) => {
+    const payload = preparePayload(data);
+
     try {
       if (isEdit && id) {
-        await updateMutation.mutateAsync({ id, ...data });
+        await updateMutation.mutateAsync({ id, ...payload });
         toast.success("Facility updated");
       } else {
-        await createMutation.mutateAsync(data);
+        await createMutation.mutateAsync(payload);
         toast.success("Facility created");
       }
       navigate("/admin/facilities");
-    } catch (err: any) {
-      toast.error(err.message || "Something went wrong");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
+      toast.error(message);
     }
   };
 
-  // Show loading spinner only when editing and facility data is still loading
   if (isEdit && isFacilityLoading) {
     return <LoadingSpinner />;
   }
