@@ -100,11 +100,11 @@ export function FacilityDirectory() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-2">
             <p className="text-brand-100">Healthcare facility endpoint list</p>
             <a
-              href="http://192.168.1.200:3000"
+              href="https://homabay-taifacare.dha.go.ke"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-white/30 text-white hover:bg-white/10 transition-colors self-start sm:self-auto ml-auto">
-              Explore facility inventory...
+              Explore DHA Links...
             </a>
           </div>
         </div>
