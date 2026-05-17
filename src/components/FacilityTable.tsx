@@ -3,6 +3,7 @@ import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
+  getPaginationRowModel,
   flexRender,
   type SortingState,
 } from "@tanstack/react-table";
@@ -16,8 +17,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/StatusBadge";
-import { CopyButton } from "@/components/CopyButton";
-import { Monitor, Tablet } from "lucide-react";
+import { Monitor, Tablet, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Facility } from "@/types";
 
@@ -25,17 +25,20 @@ interface FacilityTableProps {
   data: Facility[];
 }
 
+const PAGE_SIZE = 50;
+
 export function FacilityTable({ data }: FacilityTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const columns = useMemo(
     () => [
       { accessorKey: "mfl_code", header: "MFL Code" },
+
       {
         accessorKey: "facility_name",
         header: "Facility Name",
         cell: (info: any) => (
-          <div className="max-w-[250px]">
+          <div className="max-w-[180px]">
             <Link
               to={`/facility/${info.row.original.id}`}
               className="font-medium text-gray-900 hover:text-brand-600 transition-colors whitespace-normal break-words">
@@ -46,17 +49,12 @@ export function FacilityTable({ data }: FacilityTableProps) {
       },
       { accessorKey: "county", header: "County" },
       { accessorKey: "subcounty", header: "Subcounty" },
-      // { accessorKey: "facility_type", header: "Type" },
       {
         id: "sophos_ip",
-        header: () => <div className="text-center w-full">Sophos Address</div>,
+        header: () => <div className="text-center w-full">Sophos IP</div>,
         cell: ({ row }: any) => (
           <div className="flex justify-center">
             <div className="flex items-center gap-2">
-              {/* <span className="font-mono text-sm">
-                {row.original.sophos_ip || "—"}
-              </span> */}
-              {/* {row.original.sophos_ip && <CopyButton text={row.original.sophos_ip} />} */}
               {row.original.sophos_url && (
                 <a
                   href={row.original.sophos_url}
@@ -67,8 +65,7 @@ export function FacilityTable({ data }: FacilityTableProps) {
                   <img
                     src="/resources/pc.png"
                     alt="Open Sophos"
-                    className="h-10 w-14"
-                    // className="h-15 w-20"
+                    className="h-10 w-13"
                   />
                 </a>
               )}
@@ -78,14 +75,10 @@ export function FacilityTable({ data }: FacilityTableProps) {
       },
       {
         id: "elastic_ip",
-        header: () => <div className="text-center w-full">Tablet Address</div>,
+        header: () => <div className="text-center w-full">Elastic IP</div>,
         cell: ({ row }: any) => (
           <div className="flex justify-center">
             <div className="flex items-center gap-2">
-              {/* <span className="font-mono text-sm">
-                {row.original.elastic_ip || "—"}
-              </span> */}
-              {/* {row.original.elastic_ip && <CopyButton text={row.original.elastic_ip} />} */}
               {row.original.elastic_url && (
                 <a
                   href={row.original.elastic_url}
@@ -95,8 +88,8 @@ export function FacilityTable({ data }: FacilityTableProps) {
                   title="Open Elastic URL">
                   <img
                     src="/resources/tab.png"
-                    alt="Open Tablet"
-                    className="h-10 w-14"
+                    alt="Open Elastic"
+                    className="h-10 w-13"
                   />
                 </a>
               )}
@@ -104,11 +97,6 @@ export function FacilityTable({ data }: FacilityTableProps) {
           </div>
         ),
       },
-      // {
-      //   accessorKey: "status",
-      //   header: "Status",
-      //   cell: ({ row }: any) => <StatusBadge status={row.original.status} />,
-      // },
     ],
     [],
   );
@@ -120,7 +108,16 @@ export function FacilityTable({ data }: FacilityTableProps) {
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: PAGE_SIZE,
+      },
+    },
   });
+
+  const pageIndex = table.getState().pagination.pageIndex;
+  const pageCount = table.getPageCount();
 
   return (
     <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
@@ -172,21 +169,28 @@ export function FacilityTable({ data }: FacilityTableProps) {
           </TableBody>
         </Table>
       </div>
+
+      {/* Pagination controls */}
       <div className="flex items-center justify-between px-4 py-3 border-t bg-gray-50/50">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}>
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}>
-          Next
-        </Button>
+        <div className="text-sm text-gray-600">
+          Page {pageIndex + 1} of {pageCount}
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}>
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}>
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );
