@@ -30,6 +30,7 @@ export function FacilityTable({ data }: FacilityTableProps) {
 
   const columns = useMemo(
     () => [
+      { accessorKey: "mfl_code", header: "MFL Code" },
       {
         accessorKey: "facility_name",
         header: "Facility Name",
