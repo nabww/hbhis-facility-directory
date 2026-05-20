@@ -16,8 +16,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { StatusBadge } from "@/components/StatusBadge";
-import { Monitor, Tablet, Eye } from "lucide-react";
+// import { StatusBadge } from "@/components/StatusBadge";
+// import { Monitor, Tablet, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Facility } from "@/types";
 
@@ -33,7 +33,6 @@ export function FacilityTable({ data }: FacilityTableProps) {
   const columns = useMemo(
     () => [
       { accessorKey: "mfl_code", header: "MFL Code" },
-
       {
         accessorKey: "facility_name",
         header: "Facility Name",
@@ -51,51 +50,66 @@ export function FacilityTable({ data }: FacilityTableProps) {
       { accessorKey: "subcounty", header: "Subcounty" },
       {
         id: "sophos_ip",
-        header: () => <div className="text-center w-full">Sophos IP</div>,
-        cell: ({ row }: any) => (
-          <div className="flex justify-center">
-            <div className="flex items-center gap-2">
-              {row.original.sophos_url && (
-                <a
-                  href={row.original.sophos_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-gray-400 hover:text-brand-600 transition-colors"
-                  title="Open Sophos URL">
-                  <img
-                    src="/resources/pc.png"
-                    alt="Open Sophos"
-                    className="h-10 w-13"
-                  />
-                </a>
-              )}
-            </div>
-          </div>
+        header: () => (
+          <div className="text-center w-full">Sophos IP Address</div>
         ),
+        cell: ({ row }: any) => {
+          const ip = row.original.sophos_ip || "";
+          // Extract last octet (digits after the last dot)
+          const lastOctet = ip ? ip.split(".").pop() : "—";
+          return (
+            <div className="flex justify-center">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-sm">{lastOctet}</span>
+                {row.original.sophos_url && (
+                  <a
+                    href={row.original.sophos_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-gray-400 hover:text-brand-600 transition-colors"
+                    title="Open Sophos URL">
+                    <img
+                      src="/resources/pc.png"
+                      alt="Open Sophos"
+                      className="h-10 w-13"
+                    />
+                  </a>
+                )}
+              </div>
+            </div>
+          );
+        },
       },
       {
         id: "elastic_ip",
-        header: () => <div className="text-center w-full">Elastic IP</div>,
-        cell: ({ row }: any) => (
-          <div className="flex justify-center">
-            <div className="flex items-center gap-2">
-              {row.original.elastic_url && (
-                <a
-                  href={row.original.elastic_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-gray-400 hover:text-brand-600 transition-colors"
-                  title="Open Elastic URL">
-                  <img
-                    src="/resources/tab.png"
-                    alt="Open Elastic"
-                    className="h-10 w-13"
-                  />
-                </a>
-              )}
-            </div>
-          </div>
+        header: () => (
+          <div className="text-center w-full">Elastic IP Address</div>
         ),
+        cell: ({ row }: any) => {
+          const ip = row.original.elastic_ip || "";
+          const lastOctet = ip ? ip.split(".").pop() : "—";
+          return (
+            <div className="flex justify-center">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-sm">{lastOctet}</span>
+                {row.original.elastic_url && (
+                  <a
+                    href={row.original.elastic_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-gray-400 hover:text-brand-600 transition-colors"
+                    title="Open Elastic URL">
+                    <img
+                      src="/resources/tab.png"
+                      alt="Open Elastic"
+                      className="h-10 w-13"
+                    />
+                  </a>
+                )}
+              </div>
+            </div>
+          );
+        },
       },
     ],
     [],
