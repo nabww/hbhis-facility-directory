@@ -7,14 +7,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import * as XLSX from "xlsx";
 import { Download } from "lucide-react";
 
+// Template headers match exactly your database column names (ignoring id, created_at, updated_at)
 const TEMPLATE_HEADERS = [
   "mfl_code",
   "facility_name",
   "county",
   "subcounty",
+  "facility_type",
   "sophos_ip",
   "elastic_ip",
-  "facility_type",
+  "sophos_url",
+  "elastic_url",
+  "status",
+  "notes",
 ];
 
 function downloadTemplate() {
@@ -32,7 +37,7 @@ export function Import() {
     if (!data || data.length === 0) return;
     setLoading(true);
     try {
-      // Helper to safely convert any value to string and trim
+      // Safely convert any cell value (number, string, null) to string and trim
       const safeTrim = (val: unknown) => String(val ?? "").trim();
 
       const mapped = data
@@ -41,19 +46,23 @@ export function Import() {
           facility_name: safeTrim(row["facility_name"]),
           county: safeTrim(row["county"]),
           subcounty: safeTrim(row["subcounty"]) || null,
+          facility_type: safeTrim(row["facility_type"]) || null,
           sophos_ip: safeTrim(row["sophos_ip"]) || null,
           elastic_ip: safeTrim(row["elastic_ip"]) || null,
-          facility_type: safeTrim(row["facility_type"]) || null,
+          sophos_url: safeTrim(row["sophos_url"]) || null,
+          elastic_url: safeTrim(row["elastic_url"]) || null,
+          status: safeTrim(row["status"]) || "active", // default to 'active' if empty
+          notes: safeTrim(row["notes"]) || null,
         }))
-        .filter((f) => f.facility_name !== ""); // skip rows without a facility name
+        .filter((f) => f.facility_name !== ""); // skip rows with no facility name
 
       if (mapped.length === 0) {
-        toast.error("No valid rows found. Check the file and column headers.");
+        toast.error("No valid rows found. Check file and column headers.");
         setLoading(false);
         return;
       }
 
-      await facilitiesService.bulkImport(mapped as any); // bulkImport expects full FacilityFormValues but we have subset; Supabase will ignore extra columns
+      await facilitiesService.bulkImport(mapped as any);
 
       const skipped = data.length - mapped.length;
       toast.success(
