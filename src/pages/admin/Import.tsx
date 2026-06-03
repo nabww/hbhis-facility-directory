@@ -8,19 +8,16 @@ import * as XLSX from "xlsx";
 import { Download } from "lucide-react";
 
 const TEMPLATE_HEADERS = [
-  "MFL Code",
-  "Facility Name",
-  "County",
-  "Subcounty",
-  "Facility Type",
-  "Sophos IP",
-  "Elastic IP",
-  "Sophos URL",
-  "Elastic URL",
+  "mfl_code",
+  "facility_name",
+  "county",
+  "subcounty",
+  "sophos_ip",
+  "elastic_ip",
+  "facility_type",
 ];
 
 function downloadTemplate() {
-  // Create a workbook with a single worksheet containing only the header row
   const ws = XLSX.utils.aoa_to_sheet([TEMPLATE_HEADERS]);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Facilities");
@@ -35,31 +32,29 @@ export function Import() {
     if (!data || data.length === 0) return;
     setLoading(true);
     try {
+      // Helper to safely convert any value to string and trim
+      const safeTrim = (val: unknown) => String(val ?? "").trim();
+
       const mapped = data
         .map((row) => ({
-          mfl_code: (row["MFL Code"] || "").trim() || null,
-          facility_name: (row["Facility Name"] || "").trim(),
-          county: (row["County"] || "").trim(),
-          subcounty: (row["Subcounty"] || "").trim() || null,
-          facility_type: (row["Facility Type"] || "").trim() || null,
-          sophos_ip: (row["Sophos IP"] || "").trim() || null,
-          elastic_ip: (row["Elastic IP"] || "").trim() || null,
-          sophos_url: (row["Sophos URL"] || "").trim() || null,
-          elastic_url: (row["Elastic URL"] || "").trim() || null,
-          status: "active",
-          notes: null,
+          mfl_code: safeTrim(row["mfl_code"]) || null,
+          facility_name: safeTrim(row["facility_name"]),
+          county: safeTrim(row["county"]),
+          subcounty: safeTrim(row["subcounty"]) || null,
+          sophos_ip: safeTrim(row["sophos_ip"]) || null,
+          elastic_ip: safeTrim(row["elastic_ip"]) || null,
+          facility_type: safeTrim(row["facility_type"]) || null,
         }))
-        .filter((f) => f.facility_name !== "");
+        .filter((f) => f.facility_name !== ""); // skip rows without a facility name
 
       if (mapped.length === 0) {
-        toast.error(
-          "No valid rows found. Please check the file and column headers.",
-        );
+        toast.error("No valid rows found. Check the file and column headers.");
         setLoading(false);
         return;
       }
 
-      await facilitiesService.bulkImport(mapped);
+      await facilitiesService.bulkImport(mapped as any); // bulkImport expects full FacilityFormValues but we have subset; Supabase will ignore extra columns
+
       const skipped = data.length - mapped.length;
       toast.success(
         `Imported ${mapped.length} facilities` +
