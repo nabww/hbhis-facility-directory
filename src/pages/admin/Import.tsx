@@ -13,24 +13,40 @@ export function Import() {
     if (!data || data.length === 0) return;
     setLoading(true);
     try {
-      const mapped = data.map((row) => ({
-        mfl_code: row["MFL Code"] || null,
-        facility_name: row["Facility Name"] || "",
-        county: row["County"] || "",
-        subcounty: row["Subcounty"] || null,
-        facility_type: row["Facility Type"] || null,
-        sophos_ip: row["Sophos IP"] || null,
-        elastic_ip: row["Elastic IP"] || null,
-        sophos_url: row["Sophos URL"] || null,
-        elastic_url: row["Elastic URL"] || null,
-        status: "active",
-        notes: null, // ← added
-      }));
+      const mapped = data
+        .map((row) => ({
+          mfl_code: (row["MFL Code"] || "").trim() || null,
+          facility_name: (row["Facility Name"] || "").trim(),
+          county: (row["County"] || "").trim(),
+          subcounty: (row["Subcounty"] || "").trim() || null,
+          facility_type: (row["Facility Type"] || "").trim() || null,
+          sophos_ip: (row["Sophos IP"] || "").trim() || null,
+          elastic_ip: (row["Elastic IP"] || "").trim() || null,
+          sophos_url: (row["Sophos URL"] || "").trim() || null,
+          elastic_url: (row["Elastic URL"] || "").trim() || null,
+          status: "active",
+          notes: null,
+        }))
+        .filter((f) => f.facility_name !== ""); // ← ignores blank facility name rows
+
+      if (mapped.length === 0) {
+        toast.error(
+          "No valid rows found. Please check the file and column headers.",
+        );
+        setLoading(false);
+        return;
+      }
+
       await facilitiesService.bulkImport(mapped);
-      toast.success(`Imported ${mapped.length} facilities`);
+      const skipped = data.length - mapped.length;
+      toast.success(
+        `Imported ${mapped.length} facilities` +
+          (skipped > 0 ? ` (${skipped} blank rows skipped)` : ""),
+      );
       setData(null);
-    } catch (err: any) {
-      toast.error(err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Import failed";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
