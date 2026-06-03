@@ -4,6 +4,28 @@ import { facilitiesService } from "@/services/facilities";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import * as XLSX from "xlsx";
+import { Download } from "lucide-react";
+
+const TEMPLATE_HEADERS = [
+  "MFL Code",
+  "Facility Name",
+  "County",
+  "Subcounty",
+  "Facility Type",
+  "Sophos IP",
+  "Elastic IP",
+  "Sophos URL",
+  "Elastic URL",
+];
+
+function downloadTemplate() {
+  // Create a workbook with a single worksheet containing only the header row
+  const ws = XLSX.utils.aoa_to_sheet([TEMPLATE_HEADERS]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Facilities");
+  XLSX.writeFile(wb, "facility_import_template.xlsx");
+}
 
 export function Import() {
   const [data, setData] = useState<any[] | null>(null);
@@ -27,7 +49,7 @@ export function Import() {
           status: "active",
           notes: null,
         }))
-        .filter((f) => f.facility_name !== ""); // ← ignores blank facility name rows
+        .filter((f) => f.facility_name !== "");
 
       if (mapped.length === 0) {
         toast.error(
@@ -55,6 +77,27 @@ export function Import() {
   return (
     <div className="space-y-6 max-w-2xl">
       <h1 className="text-3xl font-bold">Import Facilities</h1>
+
+      {/* Template download card */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Download Template</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-gray-600 mb-3">
+            Use the template to ensure your file has the correct column headers.
+          </p>
+          <Button
+            onClick={downloadTemplate}
+            variant="outline"
+            className="gap-2">
+            <Download className="h-4 w-4" />
+            Download Template (.xlsx)
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Upload card */}
       <Card>
         <CardHeader>
           <CardTitle>Upload Excel File</CardTitle>
